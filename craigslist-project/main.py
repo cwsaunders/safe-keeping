@@ -22,8 +22,11 @@ def craigslist_scraper(event,context):
     lambda_path = "/tmp/" + filename
     s3_path = "/100001/20180223/" + filename
 
+    # S3
     s3 = boto3.resource("s3")
     s3.Bucket(bucket_name).put_object(Key=s3_path, Body=encoded_string)
+
+    # Return JSON of CraigslistJobs
     return {
         "statusCode": 200,
         "headers": {
