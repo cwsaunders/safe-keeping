@@ -18,11 +18,18 @@ provider:
             - s3:PutObjectAcl
             - 'kinesis:PutRecord'
             - 'kinesis:GetRecord'
+            - dynamodb:GetItem
+            - dynamodb:PutItem
           Resource:
             - arn:aws:s3:::buckety-boo-bucket/*
             - arn:aws:s3:::kinesis-output-s3-4233/*
+            - arn:aws:s3:::kinesis-output-s3-4233
+            - arn:aws:dynamodb:us-east-1:960304447084:table/DynamoDB-data_from_kinesis_34
             - Fn::GetAtt:
               - KinesisToDynamoStream
+              - Arn
+            - Fn::GetAtt:
+              - DynamoIsMyName
               - Arn
 
 resources: 
@@ -40,6 +47,23 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: kinesis-output-s3-4233
+    DynamoIsMyName:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          TableName: DynamoDB-data_from_kinesis_34
+          AttributeDefinitions:
+            - AttributeName: "JobName"
+              AttributeType: "S"
+            - AttributeName: "ID"
+              AttributeType: "S"
+          KeySchema:
+            - AttributeName: "JobName"
+              KeyType: "HASH"
+            - AttributeName: "ID"
+              KeyType: "RANGE"
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
 
 
 functions:
@@ -67,6 +91,13 @@ functions:
           startingPosition: LATEST
           enabled: true
           functionResponseType: ReportBatchItemFailures
+  s3ToDynamoDB:
+    handler: s3-to-dynamo.lambda_handler
+    events:
+      - s3:
+          bucket: kinesis-output-s3-4233
+          event: s3:ObjectCreated:*
+          existing: true
 
 plugins:
   - serverless-python-requirements
