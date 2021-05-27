@@ -14,7 +14,10 @@
 # Build instructions:
 
 <ol>
-  <li></li>
+  <li>git clone https://github.com/cwsaunders/safe-keeping.git</li>
+  <li>cd into craigslist-project directory (cd craigslist-project)</li>
+  <li>npm i</li>
+  <li>sls deploy</li>
   
   
   
