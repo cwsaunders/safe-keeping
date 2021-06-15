@@ -1,0 +1,28 @@
+- name: Incude variables
+  include_vars:
+    file: "vars/main.yml"
+
+- name: Install boto3 and botocore with pip3 module
+  pip:
+    name: 
+    - boto3
+    - botocore
+    #executable: pip-3.7
+
+- name: generate cf template
+  template:
+    src: "templates/cloudformation.yml.tpl"
+    dest: "template-dest/cloudformation.yml"
+
+- name: create a cloudformation stack
+  #vars:
+    #ansible_python_interpreter: /usr/bin/python3
+  amazon.aws.cloudformation:
+    aws_access_key: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    aws_secret_key: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    stack_name: "ansible-cloudformation"
+    state: "present"
+    region: "us-east-1"
+    template: "template-dest/cloudformation.yml"
+    tags:
+      Stack: "ansible-cloudformation"
