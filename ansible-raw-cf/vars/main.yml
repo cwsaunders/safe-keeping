@@ -2,3 +2,6 @@ common:
   some_bucket: "test-bucket-44775"
   ansible_python_interpreter: /usr/bin/python3
   some_event: "MyEventsName"
+  region: "us-east-1"
+  aws_access_key: "XXXXXXXXXXXXXXXXX"
+  aws_secret_key: "XXXXXXXXXXXXXXXXX"
