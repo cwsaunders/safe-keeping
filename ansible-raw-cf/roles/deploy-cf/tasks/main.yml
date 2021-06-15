@@ -7,6 +7,7 @@
     name: 
     - boto3
     - botocore
+    - boto
     #executable: pip-3.7
 
 - name: generate cf template
@@ -18,11 +19,40 @@
   #vars:
     #ansible_python_interpreter: /usr/bin/python3
   amazon.aws.cloudformation:
-    aws_access_key: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-    aws_secret_key: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    aws_access_key: "{{ common.aws_access_key }}"
+    aws_secret_key: "{{ common.aws_secret_key }}"
     stack_name: "ansible-cloudformation"
     state: "present"
     region: "us-east-1"
     template: "template-dest/cloudformation.yml"
     tags:
       Stack: "ansible-cloudformation"
+
+# Gather information about CF stack
+- name: Get summary information about a stack
+  amazon.aws.cloudformation_info:
+    stack_name: "ansible-cloudformation"
+    region: "us-east-1"
+    aws_access_key: "{{ common.aws_access_key }}"
+    aws_secret_key: "{{ common.aws_secret_key }}"
+  register: cflogs
+
+- amazon.aws.cloudformation_info:
+    stack_name: "ansible-cloudformation"
+    all_facts: true
+    region: "us-east-1"
+    aws_access_key: "{{ common.aws_access_key }}"
+    aws_secret_key: "{{ common.aws_secret_key }}"
+
+# Get stack resource and stack policy information about a stack
+- amazon.aws.cloudformation_info:
+    stack_name: "ansible-cloudformation"
+    stack_resources: true
+    stack_policy: true
+    region: "us-east-1"
+    aws_access_key: "{{ common.aws_access_key }}"
+    aws_secret_key: "{{ common.aws_secret_key }}"
+
+- copy:
+    content: "{{ cflogs }}"
+    dest: "logs/cflogs.log"
