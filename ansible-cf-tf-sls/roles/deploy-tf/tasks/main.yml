@@ -1,0 +1,23 @@
+- name: Incude variables
+  include_vars:
+    file: "vars/main.yml"
+
+- name: Install boto3 and botocore with pip3 module
+  pip:
+    name: 
+    - boto3
+    - botocore
+    - boto
+    #executable: pip-3.7
+
+- name: generate tf template
+  template:
+    src: "templates/main.tf.tpl"
+    dest: "terraform/main.tf"
+
+- command: 'printenv'
+
+- terraform:
+    project_path: 'terraform/'
+    state: present
+    #force_init: true
