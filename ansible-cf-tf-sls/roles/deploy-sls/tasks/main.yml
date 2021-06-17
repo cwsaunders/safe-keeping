@@ -1,0 +1,22 @@
+- name: Incude variables
+  include_vars:
+    file: "vars/main.yml"
+
+- name: Install boto3 and botocore with pip3 module
+  pip:
+    name: 
+    - python-craigslist
+
+- name: Install npm packages
+  community.general.npm:
+    ci: yes
+    path: serverless
+
+- name: Deploy the Serverless stack to create resources
+  serverless:
+    state: present
+    region: "us-east-1"
+    service_path: "serverless/" 
+    force: true 
+    verbose: true
+  register: sls_output
