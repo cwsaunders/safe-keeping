@@ -1,0 +1,22 @@
+---
+- name: "Playing with Ansible and Git"
+  hosts: localhost
+  connection: local 
+  #become: true
+  roles:
+    - base
+    - deploy-cf
+    - deploy-tf
+    - deploy-sls
+  vars:
+    playbook_dir: test # unused right now
+    ansible_python_interpreter: /usr/bin/python3
+
+# tasks starting  **************
+
+  tasks:
+    - name: "just execute a ls -lrt command"
+      shell: "ls -lrt"
+      register: "output"
+
+    #- debug: var=output.stdout_lines
