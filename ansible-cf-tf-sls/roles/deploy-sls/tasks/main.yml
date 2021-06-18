@@ -12,6 +12,11 @@
     ci: yes
     path: serverless
 
+- name: generate sls template
+  template:
+    src: "templates/serverless.yml.tpl"
+    dest: "serverless/serverless.yml"
+
 - name: Deploy the Serverless stack to create resources
   serverless:
     state: present
